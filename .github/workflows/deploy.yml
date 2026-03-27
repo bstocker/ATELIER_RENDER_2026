@@ -39,6 +39,32 @@ jobs:
           echo "IMAGE_URL=${IMAGE_URL}" >> $GITHUB_ENV
           echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
 
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Delete existing Render service if present
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SERVICE_NAME: flask-render-iac
+        run: |
+          SERVICE_ID=$(curl -s \
+            -H "Authorization: Bearer ${RENDER_API_KEY}" \
+            https://api.render.com/v1/services \
+            | jq -r --arg NAME "$SERVICE_NAME" '.[] | select(.name==$NAME) | .id' \
+            | head -n 1)
+
+          if [ -z "$SERVICE_ID" ] || [ "$SERVICE_ID" = "null" ]; then
+            echo "No existing Render service named ${SERVICE_NAME}. Nothing to delete."
+          else
+            echo "Deleting existing Render service: ${SERVICE_NAME} (${SERVICE_ID})"
+            curl -s -X DELETE \
+              -H "Authorization: Bearer ${RENDER_API_KEY}" \
+              "https://api.render.com/v1/services/${SERVICE_ID}"
+          fi
+
+      - name: Wait after delete
+        run: sleep 10
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
