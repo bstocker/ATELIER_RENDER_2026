@@ -15,8 +15,8 @@ def health():
 def info():
     return {
         "app": "Flask Render",
-        "student": "VOTRE_NOM",
-        "version": "v1"
+        "student": os.getenv("STUDENT_NAME", "unknown"),
+        "version": os.getenv("APP_VERSION", "v1")
     }
 
 @app.route("/env")

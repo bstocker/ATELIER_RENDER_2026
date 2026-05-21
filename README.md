@@ -124,6 +124,42 @@ frontend/
 **Indices N°2 :** Le répertoire racine de votre React (frontend) est à renseigner dans le champ **Root Directory** dans Render lors de la création de votre **Static Site**  
 
 ---------------------------------------------------
+**Quick Start - Déployer Flask + Adminer via Terraform**
+---------------------------------------------------
+1. Créez vos secrets GitHub/Render : `RENDER_API_KEY` et `RENDER_OWNER_ID`.
+2. Remplissez les variables Terraform (ou utilisez `terraform.tfvars`):
+  - `github_actor` : votre pseudo GitHub (utilisé pour nommer les services)
+  - `image_url` / `image_tag` : image Docker de l'app Flask (GHCR ou autre)
+  - (Adminer utilise par défaut l'image `adminer:latest`)
+3. Exécutez :
+
+```bash
+cd terraform
+terraform init
+terraform plan -out plan.tfplan
+terraform apply "plan.tfplan"
+```
+
+Après `apply` vous aurez deux Web Services créés (flask + adminer). Les sorties Terraform incluent les noms des services (`service_name`, `adminer_service_name`).
+
+---------------------------------------------------
+**Créer le Static Site React sur Render (UI)**
+---------------------------------------------------
+1. Sur Render : New → Static Site → Public Git Repository
+2. Renseignez la repository et mettez `Root Directory` sur `frontend` (voir structure minimale ci-dessus).
+3. Configurez la build command (`npm run build` ou `pnpm build`) et la publish directory (`build`).
+
+---------------------------------------------------
+**Créer la Managed Database PostgreSQL sur Render (UI)**
+---------------------------------------------------
+1. Sur Render : New → Database → PostgreSQL → Managed
+2. Choisissez plan et région, créez la DB.
+3. Récupérez la connection string et mettez-la dans les variables d'environnement de votre `flask` Web Service (`DATABASE_URL`), ou configurez une secret dans GitHub Actions pour CI/CD.
+
+Notes : Adminer vous permet de vous connecter à la DB gérée en utilisant la connection string fournie par Render (hôte, port, user, password, db).
+
+
+---------------------------------------------------
 Evaluation
 ---------------------------------------------------
 Cet atelier Render, **noté sur 20 points**, est évalué sur la base du barème suivant :  
