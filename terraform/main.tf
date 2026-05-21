@@ -52,13 +52,12 @@ resource "render_web_service" "adminer" {
 }
 
 resource "render_static_site" "frontend" {
-  name    = "frontend-static-${var.github_actor}"
-  plan    = "free"
-  region  = "frankfurt"
+  name        = "frontend-static-${var.github_actor}"
 
-  repo         = var.frontend_repo
+  # provider expects repo_url, branch, root_dir, build_command, publish_path
+  repo_url     = var.frontend_repo
   branch       = var.frontend_branch
-  root         = var.frontend_root
+  root_dir     = var.frontend_root
   build_command = var.frontend_build_command
   publish_path = var.frontend_publish_path
 
