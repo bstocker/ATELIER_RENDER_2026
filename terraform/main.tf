@@ -49,6 +49,4 @@ resource "render_web_service" "adminer" {
     }
   }
 
-  env_vars = {}
-
 }
