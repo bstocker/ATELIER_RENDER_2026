@@ -12,11 +12,6 @@ provider "render" {
   owner_id = var.render_owner_id
 }
 
-variable "github_actor" {
-  description = "GitHub username"
-  type        = string
-}
-
 resource "render_web_service" "flask_app" {
   name   = "flask-render-iac-${var.github_actor}"
   plan   = "free"
@@ -34,7 +29,6 @@ resource "render_web_service" "flask_app" {
       value = "production"
     }
   }
-
 }
 
 resource "render_web_service" "adminer" {
@@ -48,18 +42,4 @@ resource "render_web_service" "adminer" {
       tag       = var.adminer_image_tag
     }
   }
-
-}
-
-resource "render_static_site" "frontend" {
-  name        = "frontend-static-${var.github_actor}"
-
-  # provider expects repo_url, branch, root_dir, build_command, publish_path
-  repo_url     = var.frontend_repo
-  branch       = var.frontend_branch
-  root_dir     = var.frontend_root
-  build_command = var.frontend_build_command
-  publish_path = var.frontend_publish_path
-
-  auto_deploy = true
 }
