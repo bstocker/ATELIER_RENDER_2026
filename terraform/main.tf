@@ -43,3 +43,13 @@ resource "render_web_service" "adminer" {
     }
   }
 }
+
+resource "render_static_site" "frontend" {
+  name           = "frontend-static-${var.github_actor}"
+  repo_url       = var.frontend_repo
+  branch         = var.frontend_branch
+  root_directory = var.frontend_root
+  build_command  = var.frontend_build_command
+  publish_path   = var.frontend_publish_path
+  auto_deploy    = true
+}
